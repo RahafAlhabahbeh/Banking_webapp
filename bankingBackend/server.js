@@ -1,9 +1,11 @@
 require('dotenv').config();
 
+console.log('Starting SecureBank Backend Server...');
+
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(express.json());
@@ -243,7 +245,7 @@ app.get('/accounts/:id/transactions', (req, res) => {
   const accountId = req.params.id;
 
   const sql = `
-    SELECT 
+    SELECT
       id AS transaction_id,
       type,
       amount,
@@ -266,14 +268,75 @@ app.get('/accounts/:id/transactions', (req, res) => {
   });
 });
 
+app.get('/account-types', (req, res) => {
+  const sql = 'SELECT id, type_name FROM account_types ORDER BY id';
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  pool.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching account types:', err);
+      return res.status(500).json({ error: 'Failed to get account types', details: err.message });
+    }
+
+    res.json(results);
+  });
 });
+
+app.get('/users/:userId/customer', (req, res) => {
+  const userId = req.params.userId;
+
+  const sql = 'SELECT id FROM customers WHERE user_id = ?';
+
+  pool.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error checking customer status:', err);
+      return res.status(500).json({ error: 'Failed to check customer status', details: err.message });
+    }
+
+    res.json({ hasCustomer: results.length > 0 });
+  });
+});
+
+app.get('/users/:userId/accounts', (req, res) => {
+  const userId = req.params.userId;
+
+  const sql = `
+    SELECT
+      a.id,
+      a.account_number,
+      a.balance,
+      a.currency,
+      a.created_at,
+      at.type_name AS account_type,
+      c.id AS customer_id
+    FROM accounts a
+    JOIN account_types at ON a.account_type_id = at.id
+    JOIN customers c ON a.customer_id = c.id
+    WHERE c.user_id = ?
+  `;
+
+  pool.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching user accounts:', err);
+      return res.status(500).json({ error: 'Failed to get accounts', details: err.message });
+    }
+
+    res.json({ accounts: results });
+  });
+});
+
 
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const PORT = process.env.PORT || 3001;
+
+const server = app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
+server.on('error', (error) => {
+  console.error('Server startup error:', error);
+});
 
 app.post('/users/login', (req, res) => {
   const { username, password } = req.body;

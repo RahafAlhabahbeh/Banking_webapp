@@ -1,3 +1,100 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import Google Fonts for professional banking look */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    @apply antialiased;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Modern card component */
+  .banking-card {
+    @apply bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-xl border border-white border-opacity-20;
+    background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.2);
+  }
+
+  /* Professional button styles */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 active:scale-95;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold text-gray-700 bg-white border-2 border-gray-200 transition-all duration-300 transform hover:scale-105 active:scale-95;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .btn-secondary:hover {
+    @apply border-gray-300;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+
+  /* Form input styling */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white bg-opacity-80 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:border-transparent;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .form-input:focus {
+    @apply border-blue-400;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  /* Banking theme colors */
+  .text-bank-primary { color: #667eea; }
+  .text-bank-secondary { color: #764ba2; }
+  .bg-bank-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  /* Loading animation */
+  .loading-spinner {
+    @apply inline-block w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin;
+  }
+
+  /* Fade in animation */
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+  }
+
+  /* Status indicators */
+  .status-success {
+    @apply text-green-600 bg-green-100 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-error {
+    @apply text-red-600 bg-red-100 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-warning {
+    @apply text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full text-sm font-medium;
+  }
+}
